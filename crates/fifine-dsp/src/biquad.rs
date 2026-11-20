@@ -144,3 +144,110 @@ impl DspNode for BiquadFilter {
         self.y2 = 0.0;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::f32::consts::PI;
+
+    fn generate_sine(freq_hz: f32, sample_rate: f32, num_samples: usize) -> Vec<f32> {
+        (0..num_samples)
+            .map(|i| (2.0 * PI * freq_hz * (i as f32) / sample_rate).sin())
+            .collect()
+    }
+
+    fn rms(samples: &[f32]) -> f32 {
+        let sum_sq: f32 = samples.iter().map(|s| s * s).sum();
+        (sum_sq / (samples.len() as f32)).sqrt()
+    }
+
+    #[test]
+    fn test_high_pass_filter_attenuates_sub_bass_rumble() {
+        let sr = 48_000.0;
+        let mut hpf = BiquadFilter::new(
+            FilterType::HighPass {
+                cutoff_hz: 100.0,
+                q: 0.70710678,
+            },
+            sr,
+        );
+        let mut ctx = ProcessContext::new(sr);
+
+        let mut low_rumble = generate_sine(25.0, sr, 4800);
+        let mut voice_freq = generate_sine(1000.0, sr, 4800);
+
+        let orig_low_rms = rms(&low_rumble[2400..]);
+        let orig_voice_rms = rms(&voice_freq[2400..]);
+
+        hpf.process_frame(&mut low_rumble, &mut ctx);
+        hpf.reset();
+        hpf.process_frame(&mut voice_freq, &mut ctx);
+
+        let filtered_low_rms = rms(&low_rumble[2400..]);
+        let filtered_voice_rms = rms(&voice_freq[2400..]);
+
+        assert!(
+            filtered_low_rms < orig_low_rms * 0.15,
+            "25 Hz rumble should be strongly attenuated"
+        );
+        assert!(
+            (filtered_voice_rms - orig_voice_rms).abs() < 0.05,
+            "1 kHz voice tone should pass untouched"
+        );
+    }
+
+    #[test]
+    fn test_peaking_eq_boost_and_cut() {
+        let sr = 48_000.0;
+        let mut boost_eq = BiquadFilter::new(
+            FilterType::PeakingEq {
+                freq_hz: 3200.0,
+                q: 1.0,
+                gain_db: 6.0,
+            },
+            sr,
+        );
+        let mut cut_eq = BiquadFilter::new(
+            FilterType::PeakingEq {
+                freq_hz: 3200.0,
+                q: 1.0,
+                gain_db: -6.0,
+            },
+            sr,
+        );
+        let mut ctx = ProcessContext::new(sr);
+
+        let orig = generate_sine(3200.0, sr, 4800);
+        let orig_rms = rms(&orig[2400..]);
+
+        let mut boosted = orig.clone();
+        boost_eq.process_frame(&mut boosted, &mut ctx);
+        assert!(rms(&boosted[2400..]) > orig_rms * 1.8);
+
+        let mut cut = orig;
+        cut_eq.process_frame(&mut cut, &mut ctx);
+        assert!(rms(&cut[2400..]) < orig_rms * 0.6);
+    }
+
+    #[test]
+    fn test_biquad_bypass_and_reset() {
+        let sr = 48_000.0;
+        let mut filter = BiquadFilter::new(
+            FilterType::HighShelf {
+                freq_hz: 8000.0,
+                q: 0.707,
+                gain_db: 12.0,
+            },
+            sr,
+        );
+        let mut ctx = ProcessContext::new(sr);
+
+        filter.set_enabled(false);
+        assert!(!filter.is_enabled());
+
+        let orig = vec![0.5, -0.5, 0.25, -0.25];
+        let mut buf = orig.clone();
+        filter.process_frame(&mut buf, &mut ctx);
+        assert_eq!(buf, orig);
+    }
+}

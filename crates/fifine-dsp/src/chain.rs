@@ -130,3 +130,68 @@ impl DspPipelineBuilder {
         DspPipeline::new(self.sample_rate, self.nodes)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use fifine_domain::{InMemoryProfileRegistry, ProfileRepositoryPort};
+
+    struct GainNode {
+        factor: f32,
+    }
+
+    impl DspNode for GainNode {
+        fn name(&self) -> &'static str {
+            "Custom Test Gain Node"
+        }
+
+        fn process_frame(&mut self, samples: &mut [f32], _ctx: &mut ProcessContext) {
+            for s in samples.iter_mut() {
+                *s *= self.factor;
+            }
+        }
+    }
+
+    #[test]
+    fn test_custom_di_pipeline_frame_alignment() {
+        let mut pipeline = DspPipelineBuilder::new(48_000.0)
+            .with_node(GainNode { factor: 2.0 })
+            .with_node(GainNode { factor: 0.25 })
+            .build();
+
+        assert_eq!(pipeline.describe_nodes().len(), 2);
+
+        let mut callbacks_triggered = 0;
+        for i in 0..(RNNOISE_FRAME_SIZE * 2) {
+            pipeline.push_sample(1.0, |frame, _ctx| {
+                callbacks_triggered += 1;
+                assert_eq!(frame.len(), RNNOISE_FRAME_SIZE);
+                assert!((frame[0] - 0.5).abs() < 1e-6);
+            });
+            if i < RNNOISE_FRAME_SIZE - 1 {
+                assert_eq!(callbacks_triggered, 0);
+            }
+        }
+        assert_eq!(callbacks_triggered, 2);
+    }
+
+    #[test]
+    fn test_k689_preset_full_pipeline_execution() {
+        let repo = InMemoryProfileRegistry::new();
+        let k689 = repo.find_by_id("k689").unwrap();
+        let mut pipeline = DspPipeline::from_preset(&k689.default_preset);
+
+        assert_eq!(pipeline.describe_nodes().len(), 8);
+
+        let mut completed_frames = 0;
+        for i in 0..(RNNOISE_FRAME_SIZE * 3) {
+            let sample = 0.2 * (2.0 * std::f32::consts::PI * 400.0 * (i as f32) / 48_000.0).sin();
+            pipeline.push_sample(sample, |frame, ctx| {
+                completed_frames += 1;
+                assert!(frame.iter().all(|s| s.is_finite() && s.abs() <= 1.0));
+                assert!((0.0..=1.0).contains(&ctx.vad_probability));
+            });
+        }
+        assert_eq!(completed_frames, 3);
+    }
+}

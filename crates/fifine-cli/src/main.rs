@@ -62,14 +62,8 @@ fn main() -> Result<()> {
         "Profile : {} ({})",
         active_profile.display_name, active_profile.id
     );
-    println!(
-        "Input   : {}",
-        input_device.name().unwrap_or_default()
-    );
-    println!(
-        "Output  : {}",
-        output_device.name().unwrap_or_default()
-    );
+    println!("Input   : {}", input_device.name().unwrap_or_default());
+    println!("Output  : {}", output_device.name().unwrap_or_default());
 
     let engine = AudioEngine::start_with_pipeline(input_device, output_device, pipeline)?;
 

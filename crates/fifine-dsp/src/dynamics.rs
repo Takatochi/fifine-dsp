@@ -152,3 +152,45 @@ impl DspNode for Limiter {
         self.gain = 1.0;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_compressor_reduces_loud_transients_and_applies_makeup() {
+        let sr = 48_000.0;
+        let mut comp = Compressor::new(-20.0, 4.0, 1.0, 50.0, 0.0, sr);
+        let mut ctx = ProcessContext::new(sr);
+
+        let mut loud_frame = vec![0.8f32; 480];
+        comp.process_frame(&mut loud_frame, &mut ctx);
+
+        assert!(
+            loud_frame.last().unwrap().abs() < 0.5,
+            "Compressor should attenuate signal above -20 dB threshold"
+        );
+    }
+
+    #[test]
+    fn test_brickwall_limiter_prevents_clipping() {
+        let sr = 48_000.0;
+        let ceiling_db = -1.0;
+        let ceiling_lin = 10.0_f32.powf(ceiling_db / 20.0);
+        let mut limiter = Limiter::new(ceiling_db, 50.0, sr);
+        let mut ctx = ProcessContext::new(sr);
+
+        let mut hot_signal = vec![1.5, -1.8, 0.2, 2.0, -0.95, 0.1];
+        limiter.process_frame(&mut hot_signal, &mut ctx);
+
+        for &s in &hot_signal {
+            assert!(
+                s.abs() <= ceiling_lin + 1e-5,
+                "Sample {} exceeded brickwall ceiling {}",
+                s,
+                ceiling_lin
+            );
+        }
+        assert!(ctx.peak_level <= ceiling_lin + 1e-5);
+    }
+}

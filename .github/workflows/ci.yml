@@ -10,8 +10,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-and-check:
-    name: Build (${{ matrix.os }})
+  test-and-lint:
+    name: Test & Lint (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -32,11 +32,17 @@ jobs:
         with:
           components: rustfmt, clippy
 
-      - name: Check formatting
+      - name: Cache Cargo registry and build artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check formatting (rustfmt)
         run: cargo fmt --all -- --check
 
-      - name: Check workspace compilation
-        run: cargo check --workspace --all-targets
+      - name: Lint with Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
 
-      - name: Build Release binary
+      - name: Run Unit & Integration Tests
+        run: cargo test --workspace --all-targets --verbose
+
+      - name: Build Release Binary
         run: cargo build --workspace --release

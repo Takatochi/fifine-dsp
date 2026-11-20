@@ -67,3 +67,32 @@ impl DspNode for VadNoiseGate {
         self.current_gain = 1.0;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_vad_gate_attenuates_when_vad_below_threshold() {
+        let sr = 48_000.0;
+        let mut gate = VadNoiseGate::new(0.40, -30.0, 1.0, 5.0, sr);
+        let mut ctx = ProcessContext::new(sr);
+        ctx.vad_probability = 0.05;
+
+        let mut noise = vec![0.1f32; 2400];
+        gate.process_frame(&mut noise, &mut ctx);
+
+        assert!(
+            noise.last().unwrap().abs() < 0.01,
+            "Noise floor should be attenuated when VAD is low"
+        );
+
+        ctx.vad_probability = 0.95;
+        let mut voice = vec![0.5f32; 2400];
+        gate.process_frame(&mut voice, &mut ctx);
+        assert!(
+            (voice.last().unwrap() - 0.5).abs() < 0.01,
+            "Voice should pass at unity gain when VAD is high"
+        );
+    }
+}

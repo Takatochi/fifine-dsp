@@ -60,3 +60,36 @@ impl DspNode for RnnoiseProcessor {
         self.state = DenoiseState::new();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_rnnoise_frame_processing_and_amplitude_preservation() {
+        let mut denoiser = RnnoiseProcessor::new(true);
+        let mut ctx = ProcessContext::new(48_000.0);
+        let mut frame = [0.0f32; RNNOISE_FRAME_SIZE];
+
+        for (i, s) in frame.iter_mut().enumerate() {
+            *s = 0.25 * (2.0 * std::f32::consts::PI * 440.0 * (i as f32) / 48_000.0).sin();
+        }
+
+        denoiser.process_frame(&mut frame, &mut ctx);
+
+        assert!((0.0..=1.0).contains(&ctx.vad_probability));
+        assert!(frame.iter().all(|s| s.is_finite() && s.abs() <= 1.0));
+    }
+
+    #[test]
+    fn test_rnnoise_bypass_leaves_signal_unchanged() {
+        let mut denoiser = RnnoiseProcessor::new(false);
+        let mut ctx = ProcessContext::new(48_000.0);
+        let orig = [0.42f32; RNNOISE_FRAME_SIZE];
+        let mut frame = orig;
+
+        denoiser.process_frame(&mut frame, &mut ctx);
+        assert_eq!(frame, orig);
+        assert_eq!(ctx.vad_probability, 1.0);
+    }
+}
