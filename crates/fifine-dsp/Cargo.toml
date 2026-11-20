@@ -1,0 +1,9 @@
+[package]
+name = "fifine-dsp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+nnnoiseless.workspace = true
+fifine-domain = { path = "../fifine-domain" }

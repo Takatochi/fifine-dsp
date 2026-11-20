@@ -1,0 +1,13 @@
+[package]
+name = "fifine-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+cpal.workspace = true
+fifine-domain = { path = "../fifine-domain" }
+fifine-dsp = { path = "../fifine-dsp" }
+fifine-engine = { path = "../fifine-engine" }
+fifine-hal = { path = "../fifine-hal" }

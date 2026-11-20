@@ -1,0 +1,10 @@
+[package]
+name = "fifine-hal"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+cpal.workspace = true
+fifine-domain = { path = "../fifine-domain" }
