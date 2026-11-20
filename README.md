@@ -6,7 +6,7 @@
 
 A cross-platform, real-time Digital Signal Processing (DSP) companion engine for **FIFINE USB microphones** (**K689**, **K688**, **AM8**, **K669**) and generic USB Audio Class (UAC) devices on **Windows** and **Linux**.
 
-Built in **Rust** following  **Hexagonal Architecture (Ports & Adapters)**, and strict **Real-Time Audio Safety** principles (zero heap allocations and zero locks on audio callback threads).
+Built in **Rust** with a modular plugin architecture and strict **Real-Time Audio Safety** principles (zero heap allocations and zero locks on audio callback threads).
 
 ---
 
@@ -31,12 +31,12 @@ Out of the box, budget and mid-range USB microphones (**FIFINE K689**, **K688**,
 
 - **Real-Time Neural Denoising:** Powered by `nnnoiseless` (pure Rust port of **RNNoise**) operating on 10 ms frames (480 samples @ 48 kHz).
 - **VAD-Driven Smooth Noise Gate:** Uses neural Voice Activity Detection probabilities to eliminate background room hiss between words without abrupt cutoffs.
-- **Capsule-Specific Acoustic Profiles:** Built-in domain presets tailored for both **Condenser** (`K689`, `K669`) and **Dynamic** (`K688`, `AM8`) capsules:
+- **Capsule-Specific Acoustic Profiles:** Built-in presets tailored for both **Condenser** (`K689`, `K669`) and **Dynamic** (`K688`, `AM8`) capsules:
   - High-Pass Filter (rumble & desk vibration removal)
   - 3-Band Parametric Biquad EQ (room boominess cut, vocal presence boost, sibilance/air shelf)
   - Vocal Dynamic Compressor & Brickwall Peak Limiter
 - **Lock-Free SPSC Audio Routing:** Bridges physical USB microphone inputs to virtual audio outputs (**VB-Cable** on Windows, **PipeWire Virtual Source** on Linux) via a lock-free ring buffer with automatic clock-drift compensation.
-- **Extensible via Dependency Injection:** Add new microphone models or inject custom DSP effects (`trait DspNode`) without modifying the core engine.
+- **Modular DSP Pipeline:** Add new microphone models or plug in custom DSP effects (`trait DspNode`) without modifying the core engine.
 
 ---
 
@@ -54,9 +54,9 @@ fifine-companion/
 ├── docs/
 │   └── ISO_IEC_IEEE_42010_ARCHITECTURE.md   # Formal Architecture Specification
 └── crates/
-    ├── fifine-domain/                       # Pure DDD Core: Entities, Presets, DI Ports (DspNode)
-    ├── fifine-dsp/                          # Real-Time DSP Adapters (RNNoise, Gate, Biquad EQ, Dynamics)
-    ├── fifine-hal/                          # Hardware Discovery Adapter (cpal / USB endpoint matching)
+    ├── fifine-domain/                       # Core Audio Models, Hardware Profiles & DSP Traits
+    ├── fifine-dsp/                          # Real-Time DSP Nodes (RNNoise, Gate, Biquad EQ, Dynamics)
+    ├── fifine-hal/                          # Hardware Discovery & Endpoint Matching (cpal)
     ├── fifine-engine/                       # Lock-Free SPSC Real-Time Stream Engine & Telemetry
     └── fifine-cli/                          # CLI Runner & Live Telemetry Monitor
 ```
@@ -75,7 +75,7 @@ fifine-companion/
 
 ### Build & Run
 
-List all registered microphone domain profiles (`k689`, `k688`, `am8`, `k669`):
+List all registered microphone profiles (`k689`, `k688`, `am8`, `k669`):
 ```bash
 cargo run --release -p fifine-cli -- --profiles
 ```
@@ -104,8 +104,8 @@ cargo run --release -p fifine-cli -- --profile k689 --no-rnnoise
 
 ## Extending the Platform
 
-### 1. Adding a Custom DSP Effect (Dependency Injection)
-Implement the `fifine_domain::DspNode` trait and inject it into `DspPipelineBuilder`:
+### 1. Adding a Custom DSP Effect
+Implement the `fifine_domain::DspNode` trait and register it with `DspPipelineBuilder`:
 
 ```rust
 use fifine_domain::{DspNode, ProcessContext};

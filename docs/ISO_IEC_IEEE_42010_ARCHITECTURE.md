@@ -23,28 +23,28 @@ In accordance with ISO/IEC/IEEE 42010 Clause 5.3, the following stakeholders and
 | ID | Stakeholder | Architecture Concerns |
 | :--- | :--- | :--- |
 | **SH-01** | End User (Streamer, Podcaster, Audio Engineer) | **C-01:** Low end-to-end round-trip latency ($\le 25\text{ ms}$).<br>**C-02:** Zero buffer underrun/overrun artifacts (clicks, pops, xruns).<br>**C-03:** Automatic hardware profile matching (e.g., K689 condenser vs. K688 dynamic). |
-| **SH-02** | DSP Plugin Contributor | **C-04:** Ability to inject custom DSP nodes (`DspNode`) into the processing pipeline via Dependency Injection without modifying the core audio engine (Open-Closed Principle). |
-| **SH-03** | Hardware Profile Maintainer | **C-05:** Declarative registration of new microphone models and acoustic presets within the domain registry without altering infrastructure adapters. |
-| **SH-04** | OS Systems Integrator | **C-06:** Strict isolation of platform-specific audio backends (WASAPI, PipeWire, ALSA) behind domain ports (Hexagonal Architecture). |
+| **SH-02** | DSP Plugin Contributor | **C-04:** Ability to add custom DSP nodes (`DspNode`) into the processing pipeline without modifying the core audio engine. |
+| **SH-03** | Hardware Profile Maintainer | **C-05:** Declarative registration of new microphone models and acoustic presets within the profile registry. |
+| **SH-04** | OS Systems Integrator | **C-06:** Strict isolation of platform-specific audio backends (WASAPI, PipeWire, ALSA) behind trait interfaces. |
 
 ---
 
 ## 3. Architecture Viewpoints
 
 The architecture is specified through three complementary viewpoints:
-1. **Domain & Logical Viewpoint:** Defines the Domain-Driven Design (DDD) core entities, value objects, ports (traits), and Dependency Inversion boundaries.
+1. **Logical & Component Viewpoint:** Defines the core data models, hardware profile specifications, and processing traits (`DspNode`, `ProfileRepositoryPort`, `DeviceDiscoveryPort`).
 2. **Real-Time Concurrency & Dataflow Viewpoint:** Specifies thread boundaries, lock-free Single-Producer Single-Consumer (SPSC) synchronization, frame alignment, and clock drift compensation.
-3. **Component & Workspace Viewpoint:** Maps logical modules onto physical Rust Cargo workspace crates.
+3. **Physical Workspace Viewpoint:** Maps logical modules onto physical Rust Cargo workspace crates.
 
 ---
 
 ## 4. Architecture Views
 
-### 4.1 Domain & Logical View (DDD + Ports & Adapters)
+### 4.1 Logical & Component View
 
-The platform enforces strict Dependency Inversion:
-- **`fifine-domain`** is a pure domain crate with zero dependencies on OS audio drivers or external DSP libraries.
-- **`fifine-dsp`**, **`fifine-hal`**, and **`fifine-engine`** act as infrastructure adapters that implement or consume domain ports (`DspNode`, `ProfileRepositoryPort`, `DeviceDiscoveryPort`).
+The platform separates hardware/DSP abstractions from OS-specific audio drivers:
+- **`fifine-domain`** defines core audio structures, hardware presets, and trait interfaces with zero dependencies on OS audio drivers or external DSP libraries.
+- **`fifine-dsp`**, **`fifine-hal`**, and **`fifine-engine`** implement and execute the signal processing pipeline and device streams.
 
 ```mermaid
 classDiagram
@@ -104,7 +104,7 @@ classDiagram
     DspNode <|.. VadNoiseGate : implements
     DspNode <|.. Compressor : implements
     DspNode <|.. Limiter : implements
-    DspPipeline o-- DspNode : injects (DI)
+    DspPipeline o-- DspNode : composes
     DeviceDiscoveryPort <|.. CpalDeviceDiscovery : implements
 ```
 
@@ -137,7 +137,7 @@ sequenceDiagram
 2. **RT-INV-02 (Lock-Free Execution):** Audio callbacks must never acquire blocking synchronization primitives (`Mutex`, `RwLock`, `Condvar`) or perform I/O system calls. Telemetry is exported exclusively via atomic registers (`AtomicUsize`, `AtomicU32`) using `Ordering::Relaxed`.
 3. **RT-INV-03 (Bounded Clock Drift):** Hardware clock skew between the USB microphone crystal oscillator and the output device is bounded by monitoring ring buffer occupancy. If occupancy exceeds `4 * 480` samples (`40 ms`), the consumer skips one frame (`480` samples) to prevent latency accumulation.
 
-### 4.3 Domain Acoustic Profile Specifications
+### 4.3 Acoustic Profile Specifications
 
 | Profile ID | Hardware Model | Capsule Type | HPF (Hz) | VAD Gate (%) | Low-Mid EQ | Presence EQ | High-Shelf EQ | Compressor |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -163,8 +163,8 @@ sequenceDiagram
 
 ## 6. Extensibility Specification
 
-### 6.1 Injecting a Custom DSP Node
-Developers can extend the audio pipeline by implementing `fifine_domain::DspNode` and injecting it via `DspPipelineBuilder::with_node`:
+### 6.1 Adding a Custom DSP Node
+Developers can extend the audio pipeline by implementing `fifine_domain::DspNode` and adding it via `DspPipelineBuilder::with_node`:
 
 ```rust
 use fifine_domain::{DspNode, ProcessContext};
