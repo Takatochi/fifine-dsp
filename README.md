@@ -6,7 +6,7 @@
 
 A cross-platform, real-time Digital Signal Processing (DSP) companion engine for **FIFINE USB microphones** (**K689**, **K688**, **AM8**, **K669**) and generic USB Audio Class (UAC) devices on **Windows** and **Linux**.
 
-Built in **Rust** following **Domain-Driven Design (DDD)**, **Hexagonal Architecture (Ports & Adapters)**, and strict **Real-Time Audio Safety** principles (zero heap allocations and zero locks on audio callback threads).
+Built in **Rust** following  **Hexagonal Architecture (Ports & Adapters)**, and strict **Real-Time Audio Safety** principles (zero heap allocations and zero locks on audio callback threads).
 
 ---
 
