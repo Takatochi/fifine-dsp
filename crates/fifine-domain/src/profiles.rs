@@ -1,10 +1,22 @@
 use crate::entities::{CapsuleType, DspPresetSpec, EqBandSpec, MicrophoneProfile, UsbId};
 
 const COMMON_FIFINE_USB_IDS: &[UsbId] = &[
-    UsbId { vid: 0x3142, pid: None },
-    UsbId { vid: 0x0C76, pid: None },
-    UsbId { vid: 0x0D8C, pid: None },
-    UsbId { vid: 0x1B3F, pid: None },
+    UsbId {
+        vid: 0x3142,
+        pid: None,
+    },
+    UsbId {
+        vid: 0x0C76,
+        pid: None,
+    },
+    UsbId {
+        vid: 0x0D8C,
+        pid: None,
+    },
+    UsbId {
+        vid: 0x1B3F,
+        pid: None,
+    },
 ];
 
 pub static BUILTIN_PROFILES: &[MicrophoneProfile] = &[

@@ -118,10 +118,7 @@ impl CpalDeviceDiscovery {
 impl DeviceDiscoveryPort for CpalDeviceDiscovery {
     fn list_endpoints(&self) -> Result<Vec<AudioEndpointDescriptor>, String> {
         let mut list = Vec::new();
-        let default_in = self
-            .host
-            .default_input_device()
-            .and_then(|d| d.name().ok());
+        let default_in = self.host.default_input_device().and_then(|d| d.name().ok());
         let default_out = self
             .host
             .default_output_device()

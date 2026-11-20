@@ -31,9 +31,7 @@ impl ProfileRepositoryPort for InMemoryProfileRegistry {
 
     fn find_by_id(&self, id: &str) -> Option<&MicrophoneProfile> {
         let lower = id.to_lowercase();
-        self.profiles
-            .iter()
-            .find(|p| p.id.to_lowercase() == lower)
+        self.profiles.iter().find(|p| p.id.to_lowercase() == lower)
     }
 
     fn detect_by_device_name(&self, os_device_name: &str) -> Option<&MicrophoneProfile> {
@@ -104,9 +102,7 @@ mod tests {
             .unwrap();
         assert_eq!(p_k688.id, "k688");
 
-        let p_am8 = reg
-            .detect_by_device_name("FIFINE AmpliGame AM8")
-            .unwrap();
+        let p_am8 = reg.detect_by_device_name("FIFINE AmpliGame AM8").unwrap();
         assert_eq!(p_am8.id, "am8");
 
         let p_generic = reg
@@ -114,7 +110,9 @@ mod tests {
             .unwrap();
         assert_eq!(p_generic.id, "k689");
 
-        assert!(reg.detect_by_device_name("Realtek HD Audio Output").is_none());
+        assert!(reg
+            .detect_by_device_name("Realtek HD Audio Output")
+            .is_none());
     }
 
     #[test]
