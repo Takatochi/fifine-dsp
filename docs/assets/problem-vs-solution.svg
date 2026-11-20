@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 540" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="rawEq" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f85149" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f85149" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="dspEq" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2ea043" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#2ea043" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="540" rx="14" fill="url(#bgGrad)" stroke="#30363d" stroke-width="2"/>
+
+  <!-- Header -->
+  <text x="550" y="38" text-anchor="middle" fill="#e6edf3" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="20" font-weight="700">
+    PROBLEM vs. SOLUTION: FIFINE K689 / K688 Acoustic Comparison
+  </text>
+  <text x="550" y="60" text-anchor="middle" fill="#8b949e" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="13">
+    48,000 Hz Real-Time Signal Analysis — Why USB Microphones Need a Dedicated DSP Engine
+  </text>
+
+  <!-- ==================== LEFT PANEL: RAW (BEFORE) ==================== -->
+  <g transform="translate(30, 80)">
+    <rect width="505" height="430" rx="10" fill="#090d13" stroke="#f85149" stroke-opacity="0.5" stroke-width="1.5"/>
+    <rect width="505" height="38" rx="10" fill="#f85149" fill-opacity="0.15"/>
+    <circle cx="22" cy="19" r="6" fill="#f85149"/>
+    <text x="38" y="24" fill="#ff7b72" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+      BEFORE: Raw USB Input (Unprocessed PCM)
+    </text>
+    <text x="490" y="24" text-anchor="end" fill="#8b949e" font-family="Consolas, monospace" font-size="12">
+      Noise Floor: -36 dBFS
+    </text>
+
+    <!-- Waveform Section -->
+    <text x="20" y="62" fill="#8b949e" font-family="Consolas, monospace" font-size="11">
+      TIME-DOMAIN WAVEFORM (Background Fan + Keyboard Clicks + Clipping)
+    </text>
+    <rect x="20" y="72" width="465" height="135" rx="6" fill="#0d1117" stroke="#21262d"/>
+
+    <!-- 0 dBFS Clipping danger zones -->
+    <line x1="20" y1="82" x2="485" y2="82" stroke="#f85149" stroke-dasharray="4,4" stroke-width="1"/>
+    <text x="480" y="79" text-anchor="end" fill="#f85149" font-family="Consolas, monospace" font-size="9">0 dBFS CLIPPING</text>
+    <line x1="20" y1="140" x2="485" y2="140" stroke="#30363d" stroke-width="1"/>
+
+    <!-- Thick constant noise floor band -->
+    <rect x="22" y="124" width="461" height="32" fill="#f85149" fill-opacity="0.18"/>
+    <path d="M 25 140
+             L 30 123 L 34 157 L 38 126 L 42 154 L 46 125 L 50 156 L 55 122 L 60 158
+             L 65 110 L 68 170 L 72 125 L 78 154 L 84 126 L 90 155 L 95 124 L 102 153
+             L 108 82 L 112 197 L 116 82 L 120 197 L 125 95 L 130 185 L 135 82 L 140 197
+             L 145 112 L 150 168 L 155 125 L 162 154 L 170 124 L 176 156 L 182 126 L 188 153
+             L 194 98 L 197 182 L 201 124 L 208 156 L 215 123 L 222 155 L 230 125 L 238 154
+             L 246 82 L 251 197 L 256 88 L 261 192 L 266 82 L 271 197 L 276 104 L 282 178
+             L 288 125 L 296 155 L 304 123 L 312 156 L 320 126 L 328 153 L 336 96 L 340 184
+             L 346 124 L 355 155 L 364 125 L 372 156 L 382 82 L 387 197 L 392 85 L 398 194
+             L 405 115 L 412 165 L 420 124 L 430 156 L 440 126 L 450 154 L 460 125 L 470 155 L 480 127"
+          fill="none" stroke="#ff7b72" stroke-width="1.5"/>
+
+    <!-- Annotations on Raw Waveform -->
+    <rect x="32" y="168" width="128" height="20" rx="4" fill="#f85149" fill-opacity="0.2" stroke="#f85149" stroke-width="0.8"/>
+    <text x="96" y="182" text-anchor="middle" fill="#ffa198" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Constant Room Hiss
+    </text>
+
+    <rect x="172" y="88" width="90" height="20" rx="4" fill="#d29922" fill-opacity="0.25" stroke="#d29922" stroke-width="0.8"/>
+    <text x="217" y="102" text-anchor="middle" fill="#e3b341" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Keyboard Click
+    </text>
+
+    <rect x="345" y="88" width="125" height="20" rx="4" fill="#f85149" fill-opacity="0.3" stroke="#f85149" stroke-width="0.8"/>
+    <text x="407" y="102" text-anchor="middle" fill="#ffa198" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Hard Peak Clipping!
+    </text>
+
+    <!-- Spectrum Section -->
+    <text x="20" y="232" fill="#8b949e" font-family="Consolas, monospace" font-size="11">
+      FREQUENCY RESPONSE &amp; NOISE SPECTRUM (20 Hz – 20 kHz)
+    </text>
+    <rect x="20" y="242" width="465" height="135" rx="6" fill="#0d1117" stroke="#21262d"/>
+
+    <!-- Grid lines -->
+    <line x1="85" y1="242" x2="85" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+    <line x1="185" y1="242" x2="185" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+    <line x1="320" y1="242" x2="320" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+    <line x1="420" y1="242" x2="420" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+
+    <!-- Raw Spectrum Curve (High sub-bass rumble + muddy 250Hz + harsh 9kHz peak) -->
+    <path d="M 22 275 Q 60 265, 95 280 T 185 268 Q 245 305, 315 295 T 415 262 L 483 295 L 483 375 L 22 375 Z"
+          fill="url(#rawEq)"/>
+    <path d="M 22 275 Q 60 265, 95 280 T 185 268 Q 245 305, 315 295 T 415 262 L 483 295"
+          fill="none" stroke="#f85149" stroke-width="2.5"/>
+
+    <!-- Spectrum Callouts -->
+    <text x="58" y="260" text-anchor="middle" fill="#ffa198" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Desk Rumble (&lt;85Hz)
+    </text>
+    <text x="185" y="258" text-anchor="middle" fill="#ffa198" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Boxy Mud (250Hz)
+    </text>
+    <text x="415" y="255" text-anchor="middle" fill="#ffa198" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Harsh Sibilance / Hiss
+    </text>
+
+    <!-- Frequency labels -->
+    <text x="35" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">50Hz</text>
+    <text x="165" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">250Hz</text>
+    <text x="300" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">3.5kHz</text>
+    <text x="405" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">10kHz</text>
+
+    <!-- Problem Summary Footer -->
+    <text x="20" y="400" fill="#ff7b72" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600">
+      ✗ Picks up PC fans, AC hum, and desk vibrations
+    </text>
+    <text x="20" y="418" fill="#ff7b72" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600">
+      ✗ Uneven dynamic range (whispers lost, loud laughs clip at 0 dBFS)
+    </text>
+  </g>
+
+  <!-- ==================== RIGHT PANEL: PROCESSED (AFTER) ==================== -->
+  <g transform="translate(565, 80)">
+    <rect width="505" height="430" rx="10" fill="#090d13" stroke="#2ea043" stroke-opacity="0.6" stroke-width="1.5"/>
+    <rect width="505" height="38" rx="10" fill="#2ea043" fill-opacity="0.18"/>
+    <circle cx="22" cy="19" r="6" fill="#3fb950"/>
+    <text x="38" y="24" fill="#56d364" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+      AFTER: fifine-dsp Pipeline (HPF + RNNoise + Gate + EQ + Comp)
+    </text>
+    <text x="490" y="24" text-anchor="end" fill="#8b949e" font-family="Consolas, monospace" font-size="12">
+      Noise Floor: -82 dBFS
+    </text>
+
+    <!-- Waveform Section -->
+    <text x="20" y="62" fill="#8b949e" font-family="Consolas, monospace" font-size="11">
+      TIME-DOMAIN WAVEFORM (Dead-Silent Pauses + Normalized Broadcast Voice)
+    </text>
+    <rect x="20" y="72" width="465" height="135" rx="6" fill="#0d1117" stroke="#21262d"/>
+
+    <!-- -0.5 dBFS Brickwall Limiter Ceiling -->
+    <line x1="20" y1="88" x2="485" y2="88" stroke="#3fb950" stroke-dasharray="4,4" stroke-width="1"/>
+    <text x="480" y="84" text-anchor="end" fill="#3fb950" font-family="Consolas, monospace" font-size="9">-0.5 dBFS LIMITER CEILING</text>
+    <line x1="20" y1="140" x2="485" y2="140" stroke="#30363d" stroke-width="1"/>
+
+    <!-- Clean Processed Waveform -->
+    <path d="M 25 140
+             L 104 140
+             L 108 102 L 112 178 L 116 94 L 120 186 L 125 98 L 130 182 L 135 94 L 140 186
+             L 145 112 L 150 168 L 155 135 L 160 140
+             L 242 140
+             L 246 96 L 251 184 L 256 94 L 261 186 L 266 95 L 271 185 L 276 102 L 282 178
+             L 288 134 L 293 140
+             L 378 140
+             L 382 95 L 387 185 L 392 94 L 398 186 L 405 108 L 412 172 L 418 135 L 424 140
+             L 480 140"
+          fill="none" stroke="#3fb950" stroke-width="1.8"/>
+
+    <!-- Annotations on Clean Waveform -->
+    <rect x="30" y="148" width="138" height="20" rx="4" fill="#2ea043" fill-opacity="0.2" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="99" y="162" text-anchor="middle" fill="#7ee787" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      RNNoise + VAD Gate (-82dB)
+    </text>
+
+    <rect x="172" y="114" width="90" height="20" rx="4" fill="#2ea043" fill-opacity="0.2" stroke="#3fb950" stroke-width="0.8"/>
+    <text x="217" y="128" text-anchor="middle" fill="#7ee787" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Click Suppressed
+    </text>
+
+    <rect x="315" y="92" width="160" height="20" rx="4" fill="#1f6feb" fill-opacity="0.25" stroke="#388bfd" stroke-width="0.8"/>
+    <text x="395" y="106" text-anchor="middle" fill="#79c0ff" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      3:1 Vocal Compressor + Limiter
+    </text>
+
+    <!-- Spectrum Section -->
+    <text x="20" y="232" fill="#8b949e" font-family="Consolas, monospace" font-size="11">
+      SHAPED STUDIO FREQUENCY RESPONSE (HPF 85Hz + 3-Band Biquad EQ)
+    </text>
+    <rect x="20" y="242" width="465" height="135" rx="6" fill="#0d1117" stroke="#21262d"/>
+
+    <!-- Grid lines -->
+    <line x1="85" y1="242" x2="85" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+    <line x1="185" y1="242" x2="185" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+    <line x1="320" y1="242" x2="320" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+    <line x1="420" y1="242" x2="420" y2="377" stroke="#21262d" stroke-dasharray="2,2"/>
+
+    <!-- Clean Spectrum Curve (HPF roll-off <85Hz, -2dB dip at 240Hz, +1.5dB presence at 3.2kHz, controlled air) -->
+    <path d="M 22 372 Q 55 368, 85 310 Q 115 278, 150 288 Q 185 305, 225 290 Q 280 278, 320 264 Q 375 278, 420 280 L 483 295 L 483 375 L 22 375 Z"
+          fill="url(#dspEq)"/>
+    <path d="M 22 372 Q 55 368, 85 310 Q 115 278, 150 288 Q 185 305, 225 290 Q 280 278, 320 264 Q 375 278, 420 280 L 483 295"
+          fill="none" stroke="#3fb950" stroke-width="2.5"/>
+
+    <!-- Spectrum Callouts -->
+    <text x="62" y="345" text-anchor="middle" fill="#7ee787" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      HPF Cut (&lt;85Hz)
+    </text>
+    <text x="188" y="322" text-anchor="middle" fill="#7ee787" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      -2.0 dB De-Mud
+    </text>
+    <text x="320" y="256" text-anchor="middle" fill="#7ee787" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      +1.5 dB Vocal Presence
+    </text>
+    <text x="435" y="272" text-anchor="middle" fill="#79c0ff" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600">
+      Smooth Air Shelf
+    </text>
+
+    <!-- Frequency labels -->
+    <text x="35" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">50Hz</text>
+    <text x="165" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">240Hz</text>
+    <text x="300" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">3.2kHz</text>
+    <text x="405" y="370" fill="#6e7681" font-family="Consolas, monospace" font-size="10">10kHz</text>
+
+    <!-- Solution Summary Footer -->
+    <text x="20" y="400" fill="#56d364" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600">
+      ✓ Neural RNNoise + VAD Gate eliminates fan &amp; room noise in real time (10 ms)
+    </text>
+    <text x="20" y="418" fill="#56d364" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600">
+      ✓ Capsule-matched EQ &amp; Compressor deliver studio broadcast voice with 0 clipping
+    </text>
+  </g>
+</svg>

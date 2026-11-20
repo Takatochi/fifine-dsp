@@ -10,6 +10,23 @@ Built in **Rust** following **Domain-Driven Design (DDD)**, **Hexagonal Architec
 
 ---
 
+## What Problem Does It Solve?
+
+Out of the box, budget and mid-range USB microphones (**FIFINE K689**, **K688**, **AM8**, **K669**) operate as driverless USB Audio Class endpoints with no onboard DSP. As a result:
+1. **Condenser capsules (`K689`, `K669`)** are highly sensitive to PC fan hum, air conditioning, mechanical keyboard clicks, room echo, and harsh high-frequency sibilance.
+2. **Dynamic capsules (`K688`, `AM8`)** often sound boxy in the `250–350 Hz` range and have wide dynamic swings (quiet speech vs. sudden clipping at `0 dBFS`).
+3. **Heavy third-party software suites** (OBS background runners, RTX Voice, or bloated DAW chains) consume excessive CPU/GPU resources or introduce noticeable latency.
+
+`fifine-dsp` solves this by inserting a deterministic, **10 ms low-latency**, zero-allocation Rust DSP pipeline between your physical USB microphone and a virtual output device:
+
+![Problem vs Solution Acoustic Comparison](docs/assets/problem-vs-solution.svg)
+
+### Real-Time CLI & Telemetry Preview
+
+![CLI Telemetry Preview](docs/assets/cli-preview.svg)
+
+---
+
 ## Key Features
 
 - **Real-Time Neural Denoising:** Powered by `nnnoiseless` (pure Rust port of **RNNoise**) operating on 10 ms frames (480 samples @ 48 kHz).
