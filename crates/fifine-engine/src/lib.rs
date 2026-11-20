@@ -130,10 +130,10 @@ impl AudioEngine {
 }
 
 pub fn get_48k_config(device: &cpal::Device, is_input: bool) -> Result<StreamConfig> {
-    let supported_configs = if is_input {
-        device.supported_input_configs()?
+    let supported_configs: Vec<cpal::SupportedStreamConfigRange> = if is_input {
+        device.supported_input_configs()?.collect()
     } else {
-        device.supported_output_configs()?
+        device.supported_output_configs()?.collect()
     };
 
     for range in supported_configs {

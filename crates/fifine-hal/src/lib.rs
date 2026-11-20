@@ -37,10 +37,10 @@ impl CpalDeviceDiscovery {
         keywords: &[&str],
         fallback_to_default: bool,
     ) -> Result<cpal::Device> {
-        let devices = if is_input {
-            self.host.input_devices()?
+        let devices: Vec<cpal::Device> = if is_input {
+            self.host.input_devices()?.collect()
         } else {
-            self.host.output_devices()?
+            self.host.output_devices()?.collect()
         };
 
         for dev in devices {
