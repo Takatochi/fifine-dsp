@@ -43,7 +43,7 @@ pub static BUILTIN_PROFILES: &[MicrophoneProfile] = &[
             },
             high_shelf_eq: EqBandSpec {
                 freq_hz: 9500.0,
-                q: 0.707,
+                q: std::f32::consts::FRAC_1_SQRT_2,
                 gain_db: 0.5,
             },
             comp_threshold_db: -20.0,
@@ -77,7 +77,7 @@ pub static BUILTIN_PROFILES: &[MicrophoneProfile] = &[
             },
             high_shelf_eq: EqBandSpec {
                 freq_hz: 10_000.0,
-                q: 0.707,
+                q: std::f32::consts::FRAC_1_SQRT_2,
                 gain_db: 2.0,
             },
             comp_threshold_db: -18.0,
@@ -111,7 +111,7 @@ pub static BUILTIN_PROFILES: &[MicrophoneProfile] = &[
             },
             high_shelf_eq: EqBandSpec {
                 freq_hz: 10_500.0,
-                q: 0.707,
+                q: std::f32::consts::FRAC_1_SQRT_2,
                 gain_db: 1.8,
             },
             comp_threshold_db: -19.0,
@@ -145,7 +145,7 @@ pub static BUILTIN_PROFILES: &[MicrophoneProfile] = &[
             },
             high_shelf_eq: EqBandSpec {
                 freq_hz: 9000.0,
-                q: 0.707,
+                q: std::f32::consts::FRAC_1_SQRT_2,
                 gain_db: -1.0,
             },
             comp_threshold_db: -21.0,

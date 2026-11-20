@@ -143,7 +143,7 @@ mod tests {
                 },
                 high_shelf_eq: EqBandSpec {
                     freq_hz: 10000.0,
-                    q: 0.707,
+                    q: std::f32::consts::FRAC_1_SQRT_2,
                     gain_db: 1.5,
                 },
                 comp_threshold_db: -18.0,

@@ -12,11 +12,9 @@ members = [
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-authors = ["FIFINE Open Companion Contributors"]
 
 [workspace.dependencies]
 anyhow = "1.0"
 cpal = "0.15"
 nnnoiseless = "0.5"
 ringbuf = "0.4"
-thiserror = "1.0"

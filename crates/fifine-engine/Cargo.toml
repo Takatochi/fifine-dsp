@@ -8,6 +8,4 @@ license.workspace = true
 anyhow.workspace = true
 cpal.workspace = true
 ringbuf.workspace = true
-fifine-domain = { path = "../fifine-domain" }
 fifine-dsp = { path = "../fifine-dsp" }
-fifine-hal = { path = "../fifine-hal" }

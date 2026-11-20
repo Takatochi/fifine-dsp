@@ -167,7 +167,7 @@ mod tests {
         let mut hpf = BiquadFilter::new(
             FilterType::HighPass {
                 cutoff_hz: 100.0,
-                q: 0.70710678,
+                q: std::f32::consts::FRAC_1_SQRT_2,
             },
             sr,
         );
@@ -235,7 +235,7 @@ mod tests {
         let mut filter = BiquadFilter::new(
             FilterType::HighShelf {
                 freq_hz: 8000.0,
-                q: 0.707,
+                q: std::f32::consts::FRAC_1_SQRT_2,
                 gain_db: 12.0,
             },
             sr,

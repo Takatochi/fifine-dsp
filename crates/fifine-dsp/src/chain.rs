@@ -28,7 +28,7 @@ impl DspPipeline {
                 "High-Pass Filter",
                 FilterType::HighPass {
                     cutoff_hz: preset.hpf_cutoff_hz,
-                    q: 0.70710678,
+                    q: std::f32::consts::FRAC_1_SQRT_2,
                 },
                 sr,
             ))
